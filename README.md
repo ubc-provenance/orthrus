@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/852328574.svg)](https://doi.org/10.5281/zenodo.14641605)
+
 # ORTHRUS: Achieving High Quality of Attribution in Provenance-based Intrusion Detection Systems
 
 This repo contains the official code of Orthrus.
