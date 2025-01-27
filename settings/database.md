@@ -6,13 +6,13 @@
 - locate the line `local   all   postgres   peer` and switch it to `local   all   postgres   md5`
 - restart the service with: `sudo service postgresql restart`
 - run psql with the postgres user: `sudo -u postgres psql -p 5433`
-- run the following steps, replacing `clearscope_e3` by the name you want (usually the dataset's name)
+- run the following steps, replacing `database_name` by the dataset name in lowercase (e.g. clearscope_e3)
 
 ## Creating database
 ```commandline
-create database clearscope_e3;
+create database database_name;
 
-\connect clearscope_e3;
+\connect database_name;
 
 create table event_table
 (

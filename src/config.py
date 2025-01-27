@@ -245,7 +245,7 @@ DATASET_DEFAULT_CONFIG = {
           ],
      },
      "CLEARSCOPE_E3": {
-          "raw_dir": "/data1/tbilot/datasets2",  # NOTE: /path/to/json/files/
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "clearscope_e3",
           "database_all_file": "clearscope_e3",
           "num_node_types": 3,
