@@ -13,15 +13,15 @@ import psycopg2
 
 # [EDITABLE AREA]: Insert your output path and credentials to the DB
 # ================================================================================
-ROOT_ARTIFACT_DIR = "/data1/tbilot/orthrus/" # Destination folder for generated files. Will be created if doesn't exist.
+ROOT_ARTIFACT_DIR = "" # Destination folder for generated files. Will be created if doesn't exist.
 ROOT_GROUND_TRUTH_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Ground_Truth/")
 
 
 DATABASE_DEFAULT_CONFIG = {
-     "host": '',  # Host machine where the db is located
-     "user": '',  # Database user
-     "password": '',  # The password to the database user
-     "port": '',  # The port number for Postgres
+     "host": 'localhost',  # Host machine where the db is located
+     "user": 'postgres',  # Database user
+     "password": 'postgres',  # The password to the database user
+     "port": '5433',  # The port number for Postgres
 }
 # ================================================================================
 
@@ -142,7 +142,7 @@ TASK_ARGS = {
 
 DATASET_DEFAULT_CONFIG = {
      "THEIA_E5": {
-          "raw_dir": "",
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "theia_e5_new",
           "database_all_file": "theia_e5_new",
           "num_node_types": 3,
@@ -159,7 +159,7 @@ DATASET_DEFAULT_CONFIG = {
           ]
      },
      "THEIA_E3": {
-          "raw_dir": "",
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "theia_e3",
           "database_all_file": "theia_e3",
           "num_node_types": 3,
@@ -181,7 +181,7 @@ DATASET_DEFAULT_CONFIG = {
           ]
      },
      "CADETS_E5": {
-          "raw_dir": "/media/bxjiang/Expansion/dataset/cadets_e5/json_cadets/",
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "cadets_e5",
           "database_all_file": "cadets_e5",
           "num_node_types": 3,
@@ -200,7 +200,7 @@ DATASET_DEFAULT_CONFIG = {
           ]
      },
      "CADETS_E3": {
-          "raw_dir": "",
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "cadets_e3",
           "database_all_file": "cadets_e3_all",
           "num_node_types": 3,
@@ -222,7 +222,7 @@ DATASET_DEFAULT_CONFIG = {
           ],
      },
      "CLEARSCOPE_E5": {
-          "raw_dir": "",
+          "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "clearscope_e5",
           "database_all_file": "clearscope_e5",
           "num_node_types": 3,
@@ -245,7 +245,7 @@ DATASET_DEFAULT_CONFIG = {
           ],
      },
      "CLEARSCOPE_E3": {
-          "raw_dir": "",
+          "raw_dir": "/data1/tbilot/datasets2",  # NOTE: /path/to/json/files/
           "database": "clearscope_e3",
           "database_all_file": "clearscope_e3",
           "num_node_types": 3,
