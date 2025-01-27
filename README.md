@@ -7,7 +7,7 @@ This repo contains the official code of Orthrus.
 ## Setup
 
 - install the environment and requirements ([guidelines](settings/environment-settings.md)).
-- download files from DARPA datasets, parse bin files into json files, put all json
+- download files from DARPA datasets (follow the link provided for DARPA E3 [here](https://github.com/darpa-i2o/Transparent-Computing/blob/master/README-E3.md) and DARPA E5 [here](https://github.com/darpa-i2o/Transparent-Computing)), parse bin files into json files, put all json
 files in a folder and set `raw_dir` value of dict `DATASET_DEFAULT_CONFIG` in `src/config.py` 
 as the json file folder path
 - create postgre databases ([guidelines](settings/database.md), replace `database_name` with the name of the dataset)
