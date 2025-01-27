@@ -1,16 +1,21 @@
+## Install/setup postgres
+
+- check if postgres is already install: `ls /etc/postgresql/`
+- if empty, install it with `sudo apt-get update && sudo apt-get install postgresql`
+- edit the file of the corresponding version: `sudo vi /etc/postgresql/{version}/main/pg_hba.conf`
+- locate the line `local   all   postgres   peer` and switch it to `local   all   postgres   md5`
+- run psql with the postgres user: `sudo -u postgres psql -p 5433`
+
 ## Creating database
 ```commandline
-# execute the psql with postgres user
-sudo -u postgres psql
-
-# create the database
-postgres=# create database database_name;
+# once connected to postres, create the db, replace `database_name` by the name you want (usually the dataset's name)
+create database database_name;
 
 # switch to the created database
-postgres=# \connect database_name;
+\connect database_name;
 
 # create the event table and grant the privileges to postgres
-database_name=# create table event_table
+create table event_table
 (
     src_node      varchar,
     src_index_id  varchar,
@@ -21,11 +26,11 @@ database_name=# create table event_table
     timestamp_rec bigint,
     _id           serial
 );
-database_name=# alter table event_table owner to postgres;
-database_name=# create unique index event_table__id_uindex on event_table (_id); grant delete, insert, references, select, trigger, truncate, update on event_table to postgres;
+alter table event_table owner to postgres;
+create unique index event_table__id_uindex on event_table (_id); grant delete, insert, references, select, trigger, truncate, update on event_table to postgres;
 
 # create the file table
-database_name=# create table file_node_table
+create table file_node_table
 (
     node_uuid varchar not null,
     hash_id   varchar not null,
@@ -34,10 +39,10 @@ database_name=# create table file_node_table
     constraint file_node_table_pk
         primary key (node_uuid, hash_id)
 );
-database_name=# alter table file_node_table owner to postgres;
+alter table file_node_table owner to postgres;
 
 # create the netflow table
-database_name=# create table netflow_node_table
+create table netflow_node_table
 (
     node_uuid varchar not null,
     hash_id   varchar not null,
@@ -49,10 +54,10 @@ database_name=# create table netflow_node_table
     constraint netflow_node_table_pk
         primary key (node_uuid, hash_id)
 );
-database_name=# alter table netflow_node_table owner to postgres;
+alter table netflow_node_table owner to postgres;
 
 # create the subject table
-database_name=# create table subject_node_table
+create table subject_node_table
 (
     node_uuid varchar,
     hash_id   varchar,
@@ -62,5 +67,5 @@ database_name=# create table subject_node_table
     constraint subject_node_table_pk
         primary key (node_uuid, hash_id)
 );
-database_name=# alter table subject_node_table owner to postgres;
+alter table subject_node_table owner to postgres;
 ```
