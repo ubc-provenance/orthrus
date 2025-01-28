@@ -66,7 +66,7 @@ def main(cfg):
                 cfg=cfg,
             )
             tot_loss += loss
-            log(f"Loss {loss:4f}")
+            # log(f"Loss {loss:4f}")
             g.to("cpu")
 
         tot_loss /= len(train_data)

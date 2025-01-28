@@ -14,7 +14,7 @@ import psycopg2
 # [EDITABLE AREA]: Insert your output path and credentials to the DB
 # ================================================================================
 ROOT_ARTIFACT_DIR = "./artifacts" # Destination folder for generated files. Will be created if doesn't exist.
-ROOT_GROUND_TRUTH_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Ground_Truth/")
+ROOT_GROUND_TRUTH_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Ground_Truth/darpa/")
 
 
 DATABASE_DEFAULT_CONFIG = {
@@ -38,7 +38,7 @@ TASK_DEPENDENCIES = OrderedDict({
 
 # --- Tasks, subtasks, and argument configurations ---
 TASK_ARGS = {
-     "preprocessing": {
+     "graph_construction": {
           "build_graphs": {
                "used_method": str, # [orthrus | magic]
                "use_all_files": bool,
@@ -51,7 +51,7 @@ TASK_ARGS = {
                },
           },
      },
-     "featurization": {
+     "edge_featurization": {
           "embed_nodes": {
                "emb_dim": int,
                "used_method": str,
@@ -125,7 +125,7 @@ TASK_ARGS = {
                },
           },
      },
-     "triage": {
+     "attack_reconstruction": {
           "tracing": {
                "used_method": str, #["depimpact"]
                "depimpact": {
@@ -245,7 +245,7 @@ DATASET_DEFAULT_CONFIG = {
           ],
      },
      "CLEARSCOPE_E3": {
-          "raw_dir": "",  # NOTE: /path/to/json/files/
+          "raw_dir": "/data1/tbilot/datasets2",  # NOTE: /path/to/json/files/
           "database": "clearscope_e3",
           "database_all_file": "clearscope_e3",
           "num_node_types": 3,
@@ -382,23 +382,23 @@ def set_task_paths(cfg):
                final_hash_string = deps_hash + subtask_to_hash[subtask_name]
                final_hash_string = hashlib.sha256(final_hash_string.encode("utf-8")).hexdigest()
                
-               if task in ["preprocessing", "featurization"]:
+               if task in ["graph_construction", "edge_featurization"]:
                     subtask_cfg._task_path = os.path.join(cfg._artifact_dir, task, cfg.dataset.name, subtask_name, final_hash_string)
                else:
                     subtask_cfg._task_path = os.path.join(cfg._artifact_dir, task, subtask_name, final_hash_string, cfg.dataset.name)
                
-               # The directory to save logs related to the preprocessing task
+               # The directory to save logs related to the graph_construction task
                subtask_cfg._logs_dir = os.path.join(subtask_cfg._task_path, "logs/")
                os.makedirs(subtask_cfg._logs_dir, exist_ok=True)
      
-     # Preprocessing paths
-     cfg.preprocessing.build_graphs._graphs_dir = os.path.join(cfg.preprocessing.build_graphs._task_path, "nx/")
-     cfg.preprocessing.build_graphs._tw_labels = os.path.join(cfg.preprocessing.build_graphs._task_path, "tw_labels/")
-     cfg.preprocessing.build_graphs._node_id_to_path = os.path.join(cfg.preprocessing.build_graphs._task_path, "node_id_to_path/")
+     # graph_construction paths
+     cfg.graph_construction.build_graphs._graphs_dir = os.path.join(cfg.graph_construction.build_graphs._task_path, "nx/")
+     cfg.graph_construction.build_graphs._tw_labels = os.path.join(cfg.graph_construction.build_graphs._task_path, "tw_labels/")
+     cfg.graph_construction.build_graphs._node_id_to_path = os.path.join(cfg.graph_construction.build_graphs._task_path, "node_id_to_path/")
 
      # Featurization paths
-     cfg.featurization.embed_nodes.feature_word2vec._model_dir = os.path.join(cfg.featurization.embed_nodes._task_path, "word2vec_models/")
-     cfg.featurization.embed_edges._edge_embeds_dir = os.path.join(cfg.featurization.embed_edges._task_path, "edge_embeds/")
+     cfg.edge_featurization.embed_nodes.feature_word2vec._model_dir = os.path.join(cfg.edge_featurization.embed_nodes._task_path, "word2vec_models/")
+     cfg.edge_featurization.embed_edges._edge_embeds_dir = os.path.join(cfg.edge_featurization.embed_edges._task_path, "edge_embeds/")
 
      # Detection paths
      cfg.detection.gnn_training._trained_models_dir = os.path.join(cfg.detection.gnn_training._task_path, "trained_models/")
@@ -410,7 +410,7 @@ def set_task_paths(cfg):
      cfg._ground_truth_dir = os.path.join(ROOT_GROUND_TRUTH_DIR, cfg.detection.evaluation.ground_truth_version + '/')
 
      # Triage paths
-     cfg.triage.tracing._tracing_graph_dir = os.path.join(cfg.triage.tracing._task_path, "tracing_graphs")
+     cfg.attack_reconstruction.tracing._tracing_graph_dir = os.path.join(cfg.attack_reconstruction.tracing._task_path, "tracing_graphs")
      
      # TODO
      cfg.postprocessing._task_path = None
@@ -578,7 +578,7 @@ def add_cfg_args_to_parser(cfg, parser):
      return parser
 
 def get_darpa_tc_node_feats_from_cfg(cfg):
-    features = cfg.preprocessing.build_graphs.node_label_features
+    features = cfg.graph_construction.build_graphs.node_label_features
     return {
         "subject": list(map(lambda x: x.strip(), features.subject.split(","))),
         "file": list(map(lambda x: x.strip(), features.file.split(","))),

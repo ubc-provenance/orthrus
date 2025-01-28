@@ -64,7 +64,7 @@ def gen_relation_onehot(rel2id):
     return rel2vec
 
 def gen_vectorized_graphs(indexid2vec, etype2oh, ntype2oh, split_files, out_dir, logger, cfg):
-    base_dir = cfg.preprocessing.build_graphs._graphs_dir
+    base_dir = cfg.graph_construction.build_graphs._graphs_dir
     sorted_paths = get_all_files_from_folders(base_dir, split_files)
 
     for path in tqdm(sorted_paths):
@@ -111,20 +111,20 @@ def main(cfg):
     # TODO: support both word2vec and doc2vec
     logger = get_logger(
         name="embed_edges_by_feature_word2vec",
-        filename=os.path.join(cfg.featurization.embed_edges._logs_dir, "embed_edges.log")
+        filename=os.path.join(cfg.edge_featurization.embed_edges._logs_dir, "embed_edges.log")
     )
 
-    use_node_types = cfg.featurization.embed_nodes.feature_word2vec.use_node_types
-    use_cmd =  cfg.featurization.embed_nodes.feature_word2vec.use_cmd
-    use_port = cfg.featurization.embed_nodes.feature_word2vec.use_port
-    decline_percentage = cfg.featurization.embed_nodes.feature_word2vec.decline_rate
+    use_node_types = cfg.edge_featurization.embed_nodes.feature_word2vec.use_node_types
+    use_cmd =  cfg.edge_featurization.embed_nodes.feature_word2vec.use_cmd
+    use_port = cfg.edge_featurization.embed_nodes.feature_word2vec.use_port
+    decline_percentage = cfg.edge_featurization.embed_nodes.feature_word2vec.decline_rate
 
     log("Loading node msg from database...")
     cur, connect = init_database_connection(cfg)
     indexid2msg = get_indexid2msg(cur, use_cmd=use_cmd, use_port=use_port)
 
     log("Generating node vectors...")
-    feature_word2vec_model_path = cfg.featurization.embed_nodes.feature_word2vec._model_dir + 'feature_word2vec.model'
+    feature_word2vec_model_path = cfg.edge_featurization.embed_nodes.feature_word2vec._model_dir + 'feature_word2vec.model'
     indexid2vec = get_indexid2vec(indexid2msg=indexid2msg, model_path=feature_word2vec_model_path, use_node_types=use_node_types, decline_percentage=decline_percentage)
 
     etype2onehot = gen_relation_onehot(rel2id=rel2id)
@@ -135,7 +135,7 @@ def main(cfg):
                           etype2oh=etype2onehot,
                           ntype2oh=ntype2onehot,
                           split_files=cfg.dataset.train_files,
-                          out_dir=os.path.join(cfg.featurization.embed_edges._edge_embeds_dir, "train/"),
+                          out_dir=os.path.join(cfg.edge_featurization.embed_edges._edge_embeds_dir, "train/"),
                           logger=logger,
                           cfg=cfg
                           )
@@ -145,7 +145,7 @@ def main(cfg):
                           etype2oh=etype2onehot,
                           ntype2oh=ntype2onehot,
                           split_files=cfg.dataset.val_files,
-                          out_dir=os.path.join(cfg.featurization.embed_edges._edge_embeds_dir, "val/"),
+                          out_dir=os.path.join(cfg.edge_featurization.embed_edges._edge_embeds_dir, "val/"),
                           logger=logger,
                           cfg=cfg
                           )
@@ -155,7 +155,7 @@ def main(cfg):
                           etype2oh=etype2onehot,
                           ntype2oh=ntype2onehot,
                           split_files=cfg.dataset.test_files,
-                          out_dir=os.path.join(cfg.featurization.embed_edges._edge_embeds_dir, "test/"),
+                          out_dir=os.path.join(cfg.edge_featurization.embed_edges._edge_embeds_dir, "test/"),
                           logger=logger,
                           cfg=cfg
                           )

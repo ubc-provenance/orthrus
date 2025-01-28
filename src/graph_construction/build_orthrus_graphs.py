@@ -8,7 +8,7 @@ from provnet_utils import *
 
 
 def get_node_list(cur, cfg):
-    use_hashed_label = cfg.preprocessing.build_graphs.use_hashed_label
+    use_hashed_label = cfg.graph_construction.build_graphs.use_hashed_label
     node_label_features = get_darpa_tc_node_feats_from_cfg(cfg)
 
     # node hash id to node label and type
@@ -142,7 +142,7 @@ def gen_edge_fused_tw(cur, nodeid2msg, logger, cfg):
                 for j in batch_edges:
                     temp_list.append(j)
 
-                window_size_in_sec = cfg.preprocessing.build_graphs.time_window_size * 60_000_000_000
+                window_size_in_sec = cfg.graph_construction.build_graphs.time_window_size * 60_000_000_000
                 if batch_edges[-1][-2] > start_time + window_size_in_sec:
                     time_interval = ns_time_to_datetime_US(start_time) + "~" + ns_time_to_datetime_US(
                         batch_edges[-1][-2])
@@ -226,7 +226,7 @@ def gen_edge_fused_tw(cur, nodeid2msg, logger, cfg):
                         if cfg._test_mode and i >= NUM_TEST_EDGES:
                             break
 
-                    date_dir = f"{cfg.preprocessing.build_graphs._graphs_dir}/graph_{day}/"
+                    date_dir = f"{cfg.graph_construction.build_graphs._graphs_dir}/graph_{day}/"
                     os.makedirs(date_dir, exist_ok=True)
                     graph_name = f"{date_dir}/{time_interval}"
 
@@ -247,13 +247,13 @@ def gen_edge_fused_tw(cur, nodeid2msg, logger, cfg):
 def main(cfg):
     logger = get_logger(
         name="graph_construction_edge_fused_tw",
-        filename=os.path.join(cfg.preprocessing.build_graphs._logs_dir, "edge_fused_tw_graph.log"))
-    logger.info(f"build_graphs path: {cfg.preprocessing.build_graphs._task_path}")
+        filename=os.path.join(cfg.graph_construction.build_graphs._logs_dir, "edge_fused_tw_graph.log"))
+    logger.info(f"build_graphs path: {cfg.graph_construction.build_graphs._task_path}")
 
     cur, connect = init_database_connection(cfg)
     nodeid2msg = get_node_list(cur=cur, cfg=cfg)
 
-    os.makedirs(cfg.preprocessing.build_graphs._graphs_dir, exist_ok=True)
+    os.makedirs(cfg.graph_construction.build_graphs._graphs_dir, exist_ok=True)
 
     gen_edge_fused_tw(cur=cur, nodeid2msg=nodeid2msg, logger=logger, cfg=cfg)
 

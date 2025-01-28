@@ -117,7 +117,7 @@ def datetime_to_timestamp_US(date):
     return int(timeStamp)
 
 def init_database_connection(cfg):
-    if cfg.preprocessing.build_graphs.use_all_files:
+    if cfg.graph_construction.build_graphs.use_all_files:
         database_name = cfg.dataset.database_all_file
     else:
         database_name = cfg.dataset.database
@@ -446,7 +446,7 @@ def get_device(cfg):
     return device
 
 def get_node_to_path_and_type(cfg):
-    out_path = cfg.preprocessing.build_graphs._node_id_to_path
+    out_path = cfg.graph_construction.build_graphs._node_id_to_path
     out_file = os.path.join(out_path, "node_to_paths.pkl")
     
     if not os.path.exists(out_file):
@@ -483,6 +483,6 @@ def get_node_to_path_and_type(cfg):
 
 def get_all_filelist(filepath):
     files = glob.glob(f"{filepath}/*json*")
-    files = [file for file in files if "bin" not in file and "tar" not in file]
+    files = [file for file in files if file.endswith("json")]
     
     return files

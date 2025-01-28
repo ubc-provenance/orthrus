@@ -9,3 +9,5 @@ Then go back to the orthrus repo within the `orthrus/settings/scripts/` folder a
 ```shell
 ./uncompress_darpa_files.sh /full/absolute/path/to/downloaded_files
 ```
+
+> This may take multiple hours based on the dataset.

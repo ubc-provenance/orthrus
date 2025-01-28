@@ -6,6 +6,10 @@ This repo contains the official code of Orthrus.
 
 ## Setup
 
+- clone the repo with submodules:
+```
+git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
+```
 - install the environment and requirements ([guidelines](settings/environment-settings.md)).
 - create a new folder and download all `tar.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
 - in the same folder, [download the java binary](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) to build the avro files and the [schema folder](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1?usp=drive_link) (can be downloaded with `gdown --folder {ID}`)
@@ -35,7 +39,7 @@ Launching Orthrus is as simple as running:
 python src/orthrus.py [dataset] [config args...]
 ```
 
-Running `orthrus.py` will run by default the `preprocessing`, `featurization`, `detection` and `triage` tasks configured within the `config/orthrus.yml` file. This configuration can be updated directly in the YML file or from the CLI, as shown above.
+Running `orthrus.py` will run by default the `graph_construction`, `edge_featurization`, `detection` and `attack_reconstruction` tasks configured within the `config/orthrus.yml` file. This configuration can be updated directly in the YML file or from the CLI, as shown above.
 
 To reproduce the experimental results of Orthrus on node detection:
 
@@ -52,7 +56,7 @@ python src/orthrus.py THEIA_E3
 
 **CLEARSCOPE_E3**
 ```
-python src/orthrus.py CLEARSCOPE_E3 --preprocessing.build_graphs.time_window_size=1.0 --detection.gnn_training.encoder.graph_attention.dropout=0.1
+python src/orthrus.py CLEARSCOPE_E3 --graph_construction.build_graphs.time_window_size=1.0 --detection.gnn_training.encoder.graph_attention.dropout=0.1
 ```
 
 **CADETS_E5**
@@ -72,7 +76,7 @@ python src/orthrus.py CLEARSCOPE_E5 --detection.gnn_training.num_epochs=10 --det
 
 ### Subsequent runs
 
-When run once, datasets are preprocessed and stored in the `ROOT_ARTIFACT_DIR` path within `config.py`. There is thus no need to recompute them. To avoid re-computing the `preprocessing` and `featurization` tasks, Orthrus can be run directly from the `detection` task using the arg `--run_from_training`.
+When run once, datasets are preprocessed and stored in the `ROOT_ARTIFACT_DIR` path within `config.py`. There is thus no need to recompute them. To avoid re-computing the `graph_construction` and `edge_featurization` tasks, Orthrus can be run directly from the `detection` task using the arg `--run_from_training`.
 
 ```shell
 python src/orthrus.py CADETS_E3 --run_from_training

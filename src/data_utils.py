@@ -9,9 +9,9 @@ from encoders import OrthrusEncoder
 
 
 def load_all_datasets(cfg):
-    train_data = load_data_set(cfg, path=cfg.featurization.embed_edges._edge_embeds_dir, split="train")
-    val_data = load_data_set(cfg, path=cfg.featurization.embed_edges._edge_embeds_dir, split="val")
-    test_data = load_data_set(cfg, path=cfg.featurization.embed_edges._edge_embeds_dir, split="test")
+    train_data = load_data_set(cfg, path=cfg.edge_featurization.embed_edges._edge_embeds_dir, split="train")
+    val_data = load_data_set(cfg, path=cfg.edge_featurization.embed_edges._edge_embeds_dir, split="val")
+    test_data = load_data_set(cfg, path=cfg.edge_featurization.embed_edges._edge_embeds_dir, split="test")
     
     all_msg, all_t, all_edge_types = [], [], []
     max_node = 0
@@ -45,7 +45,7 @@ def load_data_set(cfg, path: str, split: str) -> list[TemporalData]:
         data = torch.load(filepath).to("cpu")
         data_list.append(data)
 
-    if cfg.featurization.embed_nodes.used_method.strip() == "only_type":
+    if cfg.edge_featurization.embed_nodes.used_method.strip() == "only_type":
         data_list = extract_msg_node_type_only(data_list, cfg)
     else:
         data_list = extract_msg_from_data(data_list, cfg)
@@ -101,7 +101,7 @@ def extract_msg_from_data(data_set: list[TemporalData], cfg) -> list[TemporalDat
     Initializes the attributes of a `Data` object based on the `msg`
     computed in previous tasks.
     """
-    emb_dim = cfg.featurization.embed_nodes.emb_dim
+    emb_dim = cfg.edge_featurization.embed_nodes.emb_dim
     node_type_dim = cfg.dataset.num_node_types
     edge_type_dim = cfg.dataset.num_edge_types
     

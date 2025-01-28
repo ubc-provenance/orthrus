@@ -1,4 +1,4 @@
-preprocessing:
+graph_construction:
   build_graphs:
     used_method: orthrus
     use_all_files: True
@@ -9,7 +9,7 @@ preprocessing:
       file: type, path
       netflow: type, remote_ip, remote_port
 
-featurization:
+edge_featurization:
   embed_nodes:
     emb_dim: 128
     used_method: feature_word2vec
@@ -72,7 +72,7 @@ detection:
       use_kmeans: True
       kmeans_top_K: 20
 
-triage :
+attack_reconstruction :
   tracing:
     used_method: depimpact
     depimpact:

@@ -6,10 +6,10 @@ import wandb
 import numpy as np
 from provnet_utils import remove_underscore_keys, log
 
-from preprocessing import (
+from graph_construction import (
     build_orthrus_graphs,
 )
-from featurization import (
+from edge_featurization import (
     build_feature_word2vec,
     embed_edges_feature_word2vec,
 )
@@ -24,7 +24,7 @@ from config import (
     get_runtime_required_args,
 )
 
-from triage import (
+from attack_reconstruction import (
     tracing,
 )
 
@@ -43,9 +43,9 @@ def main(cfg, args, **kwargs):
 
     t0 = time.time()
 
-    # By default, preprocessing + training/detection is run
+    # By default, graph_construction + training/detection is run
     if not args.run_from_training:
-        # Preprocessing
+        # graph_construction
         build_orthrus_graphs.main(cfg)
         t1 = time.time()
         
