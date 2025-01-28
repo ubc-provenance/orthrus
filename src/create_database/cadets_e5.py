@@ -7,12 +7,32 @@ from config import *
 from provnet_utils import *
 
 
+def extract_subject_file_uuid(file_path, filelist):
+    subject_uuid2path = {}
+    file_uuid2path = {}
+
+    for file in tqdm(filelist):
+        with open(file_path + file, "r") as f:
+            for line in (f):
+                if "schema.avro.cdm20.Subject" in line:
+                    pattern = '{"com.bbn.tc.schema.avro.cdm20.Subject":{"uuid":"(.*?)"'
+                    match_ans = re.findall(pattern, line)[0]
+                    subject_uuid2path[match_ans] = None
+                elif "schema.avro.cdm20.FileObject" in line:
+                    if "FILE_OBJECT_UNIX_SOCKET" in line:
+                        continue
+                    pattern = '{"com.bbn.tc.schema.avro.cdm20.FileObject":{"uuid":"(.*?)"'
+                    match_ans = re.findall(pattern, line)[0]
+                    file_uuid2path[match_ans] = None
+
+    return subject_uuid2path, file_uuid2path
+
 def store_netflow(file_path, cur, connect, index_id, filelist):
     # Parse data from logs
     netobjset = set()
     netobj2hash = {}
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if "avro.cdm20.NetFlowObject" in line:
                     try:
@@ -26,28 +46,44 @@ def store_netflow(file_path, cur, connect, index_id, filelist):
                         dstaddr = res[4]
                         dstport = res[5]
 
-                        nodeproperty = srcaddr + "," + srcport + "," + dstaddr + "," + dstport
+                        nodeproperty = [srcaddr, srcport, dstaddr, dstport]
                         hashstr = stringtomd5(nodeid)
                         netobj2hash[nodeid] = [hashstr, nodeproperty]
                         netobj2hash[hashstr] = nodeid
                         netobjset.add(hashstr)
                     except:
                         pass
+                if "FILE_OBJECT_UNIX_SOCKET" in line:
+                    try:
+                        res = re.findall('FileObject":{"uuid":"(.*?)"', line)
+                        nodeid = res[0]
+                        srcaddr = None
+                        srcport = None
+                        dstaddr = None
+                        dstport = None
+
+                        nodeproperty = [srcaddr, srcport, dstaddr, dstport]
+                        hashstr = stringtomd5(nodeid)
+                        netobj2hash[nodeid] = [hashstr, nodeproperty]
+                        netobj2hash[hashstr] = nodeid
+                        netobjset.add(hashstr)
+                    except:
+                        print(line)
 
     # Store data into database
-    # datalist = []
+    datalist = []
     net_uuid2hash = {}
     for i in netobj2hash.keys():
         if len(i) != 64:
-            # datalist.append([i] + [netobj2hash[i][0]] + netobj2hash[i][1].split(",") + [index_id])
+            datalist.append([i] + [netobj2hash[i][0]] + netobj2hash[i][1] + [index_id])
             net_uuid2hash[i] = netobj2hash[i][0]
             index_id += 1
 
-    # sql = '''insert into netflow_node_table
-    #                      values %s
-    #         '''
-    # ex.execute_values(cur, sql, datalist, page_size=10000)
-    # connect.commit()
+    sql = '''insert into netflow_node_table
+                         values %s
+            '''
+    ex.execute_values(cur, sql, datalist, page_size=10000)
+    connect.commit()
 
     return index_id, net_uuid2hash
 
@@ -57,7 +93,7 @@ def store_subject(file_path, cur, connect, index_id, filelist, subject_uuid2path
     fail_count = 0
     subject_obj2hash = {}
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in (f):
                 if "schema.avro.cdm20.Event" in line:
                     subject_uuid = re.findall(
@@ -73,20 +109,19 @@ def store_subject(file_path, cur, connect, index_id, filelist, subject_uuid2path
                             pass
                         fail_count += 1
     # Store into database
-    # datalist = []
+    datalist = []
     subject_uuid2hash = {}
     for i in subject_obj2hash.keys():
         if len(i) != 64:
-            # datalist.append([i] + [stringtomd5(i)] + subject_obj2hash[
-            #     i] + [index_id])  # ([uuid, hashstr, path, cmdLine, index_id]) and hashstr=stringtomd5(uuid)
+            datalist.append([i] + [stringtomd5(i)] + subject_obj2hash[i] + [index_id])  # ([uuid, hashstr, path, cmdLine, index_id]) and hashstr=stringtomd5(uuid)
             subject_uuid2hash[i] = stringtomd5(i)
             index_id += 1
 
-    # sql = '''insert into subject_node_table
-    #                      values %s
-    #         '''
-    # ex.execute_values(cur, sql, datalist, page_size=10000)
-    # connect.commit()
+    sql = '''insert into subject_node_table
+                         values %s
+            '''
+    ex.execute_values(cur, sql, datalist, page_size=10000)
+    connect.commit()
 
     return index_id, subject_uuid2hash
 
@@ -94,7 +129,7 @@ def store_file(file_path, cur, connect, index_id, filelist, file_uuid2path):
     file_obj2hash = {}
     fail_count = 0
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if "schema.avro.cdm20.Event" in line:
                     try:
@@ -110,19 +145,19 @@ def store_file(file_path, cur, connect, index_id, filelist, file_uuid2path):
                     except:
                         fail_count += 1
 
-    # datalist = []
+    datalist = []
     file_uuid2hash = {}
     for i in file_obj2hash.keys():
         if len(i) != 64:
-            # datalist.append([i] + [stringtomd5(i), file_obj2hash[i]] + [index_id])
+            datalist.append([i] + [stringtomd5(i), file_obj2hash[i]] + [index_id])
             file_uuid2hash[i] = stringtomd5(i)
             index_id += 1
 
-    # sql = '''insert into file_node_table
-    #                      values %s
-    #         '''
-    # ex.execute_values(cur, sql, datalist, page_size=10000)
-    # connect.commit()
+    sql = '''insert into file_node_table
+                         values %s
+            '''
+    ex.execute_values(cur, sql, datalist, page_size=10000)
+    connect.commit()
 
     return index_id, file_uuid2hash
 
@@ -175,7 +210,7 @@ def store_event(file_path, cur, connect, reverse, nodeid2msg, subject_uuid2hash,
 
     for file in tqdm(filelist):
         datalist = []
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if '{"datum":{"com.bbn.tc.schema.avro.cdm20.Event"' in line:
                     relation_type = re.findall('"type":"(.*?)"', line)[0]
@@ -218,19 +253,21 @@ def main(cfg):
 
     cur, connect = init_database_connection(cfg)
 
+    subject_uuid2path, file_uuid2path = extract_subject_file_uuid(file_path=raw_dir,filelist=filelist)
+
     index_id = 0
 
     print("Processing netflow data")
-    index_id, net_uuid2hash = store_netflow(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist)
+    index_id, _ = store_netflow(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist)
 
     print("Processing subject data")
-    index_id, subject_uuid2hash = store_subject(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist)
+    index_id, _ = store_subject(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist, subject_uuid2path=subject_uuid2path)
 
     print("Processing file data")
-    index_id, file_uuid2hash = store_file(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist)
+    index_id, _ = store_file(file_path=raw_dir, cur=cur, connect=connect, index_id=index_id, filelist=filelist, file_uuid2path=file_uuid2path)
 
     print("Extracting the node list")
-    nodeid2msg = create_node_list(cur=cur)
+    nodeid2msg, subject_uuid2hash, file_uuid2hash, net_uuid2hash = create_node_list(cur=cur)
 
     print("Processing the events")
     store_event(

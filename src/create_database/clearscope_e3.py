@@ -12,7 +12,7 @@ def store_netflow(file_path, cur, connect, index_id, filelist):
     netobj2hash = {}
     net_uuid2hash = {}
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if "NetFlowObject" in line:
                     try:
@@ -65,7 +65,7 @@ def store_subject(file_path, cur, connect, index_id, filelist):
     subject_obj2hash = {}
     subject_uuid2hash = {}
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in (f):
                 if "schema.avro.cdm18.Subject" in line:
                     subject_uuid = re.findall(
@@ -104,7 +104,7 @@ def store_file(file_path, cur, connect, index_id, filelist):
     fail_count = 0
     file_uuid2hash = {}
     for file in tqdm(filelist):
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if "avro.cdm18.FileObject" in line:
                     Object_uuid = re.findall('avro.cdm18.FileObject":{"uuid":"(.*?)",(.*?)"path":"(.*?)"', line)
@@ -172,7 +172,7 @@ def store_event(file_path, cur, connect, reverse, nodeid2msg, subject_uuid2hash,
 
     for file in tqdm(filelist):
         datalist = []
-        with open(os.path.join(file_path, file), "r") as f:
+        with open(file_path + file, "r") as f:
             for line in f:
                 if '{"datum":{"com.bbn.tc.schema.avro.cdm18.Event"' in line:
                     relation_type = re.findall('"type":"(.*?)"', line)[0]
