@@ -7,8 +7,9 @@ This repo contains the official code of Orthrus.
 ## Setup
 
 - install the environment and requirements ([guidelines](settings/environment-settings.md)).
-- create a new folder and download files from DARPA datasets (follow the link provided for DARPA E3 [here](https://github.com/darpa-i2o/Transparent-Computing/blob/master/README-E3.md) and DARPA E5 [here](https://github.com/darpa-i2o/Transparent-Computing)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259).
-- decompress downloaded files in the folder: `for file in *.tar.gz; do tar -xzf "$file"; done`, and set the path to this folder as the `raw_dir` variable in the dict `DATASET_DEFAULT_CONFIG` in `src/config.py`. Delete remaining tar and bin files.
+- create a new folder and download all `tar.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
+- in the same folder, [download the java binary](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) to build the avro files and the [schema folder](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1?usp=drive_link) (can be downloaded with `gdown --folder {ID}`)
+- follow the [guidelines](settings/uncompress_darpa_files.md) to convert bin files to json files
 - create postgres databases ([guidelines](settings/database.md), replace `database_name` with the name of the downloaded dataset)
 - optionally, if using a specific postgres host/user, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
 - optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs

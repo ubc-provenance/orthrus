@@ -12,7 +12,7 @@ def extract_subject_file_uuid(file_path, filelist):
     file_uuid2path = {}
 
     for file in tqdm(filelist):
-        with open(file_path + file, "r") as f:
+        with open(os.path.join(file_path, file), "r") as f:
             for line in (f):
                 if "schema.avro.cdm20.Subject" in line:
                     pattern = '{"com.bbn.tc.schema.avro.cdm20.Subject":{"uuid":"(.*?)"'
@@ -32,7 +32,7 @@ def store_netflow(file_path, cur, connect, index_id, filelist):
     netobjset = set()
     netobj2hash = {}
     for file in tqdm(filelist):
-        with open(file_path + file, "r") as f:
+        with open(os.path.join(file_path, file), "r") as f:
             for line in f:
                 if "avro.cdm20.NetFlowObject" in line:
                     try:
@@ -93,7 +93,7 @@ def store_subject(file_path, cur, connect, index_id, filelist, subject_uuid2path
     fail_count = 0
     subject_obj2hash = {}
     for file in tqdm(filelist):
-        with open(file_path + file, "r") as f:
+        with open(os.path.join(file_path, file), "r") as f:
             for line in (f):
                 if "schema.avro.cdm20.Event" in line:
                     subject_uuid = re.findall(
@@ -129,7 +129,7 @@ def store_file(file_path, cur, connect, index_id, filelist, file_uuid2path):
     file_obj2hash = {}
     fail_count = 0
     for file in tqdm(filelist):
-        with open(file_path + file, "r") as f:
+        with open(os.path.join(file_path, file), "r") as f:
             for line in f:
                 if "schema.avro.cdm20.Event" in line:
                     try:
@@ -210,7 +210,7 @@ def store_event(file_path, cur, connect, reverse, nodeid2msg, subject_uuid2hash,
 
     for file in tqdm(filelist):
         datalist = []
-        with open(file_path + file, "r") as f:
+        with open(os.path.join(file_path, file), "r") as f:
             for line in f:
                 if '{"datum":{"com.bbn.tc.schema.avro.cdm20.Event"' in line:
                     relation_type = re.findall('"type":"(.*?)"', line)[0]

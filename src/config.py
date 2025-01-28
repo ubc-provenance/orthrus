@@ -13,7 +13,7 @@ import psycopg2
 
 # [EDITABLE AREA]: Insert your output path and credentials to the DB
 # ================================================================================
-ROOT_ARTIFACT_DIR = "" # Destination folder for generated files. Will be created if doesn't exist.
+ROOT_ARTIFACT_DIR = "./artifacts" # Destination folder for generated files. Will be created if doesn't exist.
 ROOT_GROUND_TRUTH_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Ground_Truth/")
 
 

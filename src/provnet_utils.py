@@ -37,6 +37,7 @@ import re
 
 from config import *
 import hashlib
+import glob
 from nltk.tokenize import word_tokenize
 import nltk
 nltk.download('punkt')
@@ -481,8 +482,7 @@ def get_node_to_path_and_type(cfg):
     return node_to_path_type
 
 def get_all_filelist(filepath):
-    file_paths = []
-    for root, dirs, files in os.walk(filepath):
-        for file in files:
-            file_paths.append(file)
-    return file_paths
+    files = glob.glob(f"{filepath}/*json*")
+    files = [file for file in files if "bin" not in file and "tar" not in file]
+    
+    return files
