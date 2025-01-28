@@ -96,3 +96,7 @@ The preferred solution is to run the `run.sh` script, which directly logs the ex
 ```shell
 python src/orthrus.py THEIA_E3 --wandb
 ```
+
+## License
+
+See [licence](LICENSE).
