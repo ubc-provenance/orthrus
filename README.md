@@ -4,6 +4,21 @@
 
 This repo contains the official code of Orthrus.
 
+## Citing our work
+
+```
+@inproceedings{jian2025,
+	title={{ORTHRUS: Achieving High Quality of Attribution in Provenance-based Intrusion
+	Detection Systems}},
+	author={Jiang, Baoxiang and Bilot, Tristan  and El Madhoun, Nour and Al Agha, Khaldoun  and Zouaoui, Anis and Iqbal, Shahrear and Han, Xueyuan and Pasquier, Thomas},
+	booktitle={Security Symposium (USENIX Sec'25)},
+	year={2025},
+	organization={USENIX}
+}
+```
+
+You can find the paper preprint [here](https://tfjmp.org/publications/2025-usenixsec.pdf).
+
 ## Setup
 
 - clone the repo with submodules:
