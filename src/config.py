@@ -166,7 +166,7 @@ DATASET_DEFAULT_CONFIG = {
           "num_edge_types": 10,
           "year_month": "2018-04",
           "start_end_day_range": (2, 14),
-          "train_files": ["graph_2", "graph_3", "graph_4", "graph_5", "graph_6", "graph_7", "graph_8"],
+          "train_files": ["graph_2", "graph_3", "graph_4", "graph_5"],
           "val_files": ["graph_9"],
           "test_files": ["graph_10", "graph_12", "graph_13"],
           "unused_files": ["graph_11"],
