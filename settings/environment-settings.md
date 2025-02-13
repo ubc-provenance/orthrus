@@ -31,7 +31,7 @@ pip install nltk==3.8.1
 pip install igraph==0.11.5
 pip install cairocffi==1.7.0
 
-# PyTorch GPU version
+# Replace your CUDA version here
 conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install torch_geometric==2.5.3 --no-cache-dir
 pip install pyg_lib==0.2.0 torch_scatter==2.1.1 torch_sparse==0.6.17 torch_cluster==1.6.1 torch_spline_conv==1.2.2 -f https://data.pyg.org/whl/torch-1.13.0+cu117.html --no-cache-dir
@@ -40,7 +40,6 @@ pip install pyg_lib==0.2.0 torch_scatter==2.1.1 torch_sparse==0.6.17 torch_clust
 pip install gensim==4.3.1
 
 pip install pytz==2024.1 pandas==2.2.2 yacs==0.1.8
-pip install wandb
 
 ```
 
