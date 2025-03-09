@@ -483,6 +483,6 @@ def get_node_to_path_and_type(cfg):
 
 def get_all_filelist(filepath):
     files = glob.glob(f"{filepath}/*json*")
-    files = [file for file in files if file.endswith("json")]
+    # files = [file for file in files if file.endswith("json")]
     
     return files

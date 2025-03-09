@@ -21,4 +21,4 @@ mvn assembly:assembly
 for file in $RAW_DIR/*bin*; do ./json_consumer.sh "$file"; done
 
 # Move output json files to raw dir
-mv *.json $RAW_DIR
+mv *.json* $RAW_DIR
