@@ -38,7 +38,8 @@ def main(cfg):
     device = get_device(cfg)
     
     # Reset the peak memory usage counter
-    torch.cuda.reset_peak_memory_stats(device=device)
+    if device == torch.device("cuda"):
+        torch.cuda.reset_peak_memory_stats(device=device)
 
     train_data, _, _, full_data, max_node_num = load_all_datasets(cfg)
 
