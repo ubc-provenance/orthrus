@@ -4,6 +4,9 @@ cd $RAW_DIR
 for file in *.tar.gz; do tar -xzf "$file"; done
 rm *tar.gz
 
+for file in *.gz; do gzip -d "$file"; done
+rm *.gz
+
 cp schema/TCCDMDatum.avsc ta3-java-consumer/ta3-serialization-schema/avro/
 
 cd ta3-java-consumer
