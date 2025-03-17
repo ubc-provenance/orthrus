@@ -143,8 +143,8 @@ TASK_ARGS = {
 DATASET_DEFAULT_CONFIG = {
      "THEIA_E5": {
           "raw_dir": "",  # NOTE: /path/to/json/files/
-          "database": "theia_e5_new",
-          "database_all_file": "theia_e5_new",
+          "database": "theia_e5",
+          "database_all_file": "theia_e5",
           "num_node_types": 3,
           "num_edge_types": 10,
           "year_month": "2019-05",
@@ -202,7 +202,7 @@ DATASET_DEFAULT_CONFIG = {
      "CADETS_E3": {
           "raw_dir": "",  # NOTE: /path/to/json/files/
           "database": "cadets_e3",
-          "database_all_file": "cadets_e3_all",
+          "database_all_file": "cadets_e3",
           "num_node_types": 3,
           "num_edge_types": 10,
           "year_month": "2018-04",
