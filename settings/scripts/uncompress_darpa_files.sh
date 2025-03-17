@@ -7,7 +7,7 @@ rm *tar.gz
 for file in *.gz; do gzip -d "$file"; done
 rm *.gz
 
-cp schema/TCCDMDatum.avsc ta3-java-consumer/ta3-serialization-schema/avro/
+cp ./TCCDMDatum.avsc ta3-java-consumer/ta3-serialization-schema/avro/
 
 cd ta3-java-consumer
 cd ta3-serialization-schema
