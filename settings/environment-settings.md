@@ -41,6 +41,9 @@ pip install gensim==4.3.1
 
 pip install pytz==2024.1 pandas==2.2.2 yacs==0.1.8
 
+# Reinstall numpy to solve C API problem
+conda install numpy=1.26.4
+
 ```
 
 ## Troubleshooting
