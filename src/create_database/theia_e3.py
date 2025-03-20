@@ -69,16 +69,25 @@ def store_subject(file_path, cur, connect, index_id, filelist):
             for line in (f):
                 if "schema.avro.cdm18.Subject" in line:
                     subject_uuid = re.findall(
-                        'avro.cdm18.Subject":{"uuid":"(.*?)",(.*?)"path":"(.*?)"', line)
-                    node_uuid = subject_uuid[0][0]
-                    node_path = subject_uuid[0][2]
+                        'avro.cdm18.Subject":{"uuid":"(.*?)",', line)
+                    node_uuid = subject_uuid[0]
+
+                    subject_path = re.findall(
+                        '"properties":{(.*?)"path":"(.*?)","ppid"', line
+                    )
+                    if len(subject_path) == 0:
+                        node_path = None
+                    else:
+                        node_path = subject_path[0][1]
+
                     subject_cmd = re.findall(
                         ',"cmdLine":{"string":"(.*?)"},', line
                     )
                     if len(subject_cmd) == 0:
                         node_cmd = None
                     else:
-                        node_cmd = subject_cmd[0][0]
+                        node_cmd = subject_cmd[0]
+
                     subject_obj2hash[node_uuid] = [node_path, node_cmd]
 
     # Store into database
