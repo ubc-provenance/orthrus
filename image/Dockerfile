@@ -5,7 +5,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
 RUN apt-get update \
-  && apt-get install -y wget ca-certificates graphviz gnupg lsb-release maven
+    && apt-get install -y wget ca-certificates graphviz gnupg lsb-release maven
+
+# installing JDK1.8
+RUN apt update && \
+    apt install -y openjdk-8-jdk && \
+    apt clean
+
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 # installing Anaconda version 23.3.1
 RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
@@ -42,6 +50,8 @@ RUN conda install -y psycopg2 tqdm && \
     pip install --extra-index-url=https://pypi.nvidia.com cudf-cu12==24.6.* cuml-cu12==24.6.* && \
     pip uninstall -y scipy && pip install scipy==1.10.1 && \
     pip uninstall -y numpy && pip install numpy==1.26.4
+
+RUN pip install gdown
 
 # Create a user and set the working directory
 RUN useradd -m user01
