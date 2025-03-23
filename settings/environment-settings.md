@@ -1,5 +1,20 @@
 # Environment settings
 
+## Docker
+For a quick environment setup using docker:
+1. Use the following command to build the local image:
+    ```
+    docker-compose build
+    ```
+2. Then, you can launch a temporary shell with the environment:
+    ```
+    docker-compose run --user $(id -u) --rm orthrus
+    ```
+3. Once inside the container, start the conda shell:
+    ```
+    source /opt/conda/bin/activate orthrus
+    ```
+
 ## Prerequisites
 We use the following settings to run the experiments reported in the paper:
 1. OS Version: 5.19.0-46-generic #47~22.04.1-Ubuntu

@@ -1,0 +1,6 @@
+services:
+  orthrus:
+    build: ./image
+    volumes:
+      - ./:/home
+    entrypoint: bash
