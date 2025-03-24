@@ -15,19 +15,14 @@ RUN apt update && \
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 ENV PATH=$JAVA_HOME/bin:$PATH
 
+# installing sudo
+RUN apt-get update && apt-get install -y sudo
+
 # installing Anaconda version 23.3.1
 RUN wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
 RUN bash Anaconda3-2023.03-1-Linux-x86_64.sh -b -p /opt/conda
 RUN rm Anaconda3-2023.03-1-Linux-x86_64.sh
 ENV PATH="/opt/conda/bin:$PATH"
-
-# installing and setting up PostgreSQL
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-RUN apt-get update && apt-get install -y postgresql-15 postgresql-client-15 postgresql-contrib
-
-RUN sed -i 's/local\s\+all\s\+postgres\s\+peer/local   all   postgres   md5/' /etc/postgresql/15/main/pg_hba.conf
-RUN service postgresql restart
 
 # installing python libraries
 RUN conda create -n orthrus python=3.9 && \

@@ -3,4 +3,5 @@ services:
     build: ./image
     volumes:
       - ./:/home
+      - /data1/bxjiang/data:/data # used for passing dataset to container
     entrypoint: bash
