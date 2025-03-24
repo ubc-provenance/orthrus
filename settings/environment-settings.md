@@ -1,5 +1,24 @@
 # Environment settings
 
+## Docker
+For a quick environment setup using docker, under orthrus/:
+1. In ```orthrus/compose.yml```, set ```/path/of/data/folder``` as the data folder
+
+2. Then, use the following command to build the local image:
+    ```
+    docker-compose build
+    ```
+3. Then, you can launch a temporary shell with the environment:
+    ```
+    docker-compose run --user $(id -u) --rm orthrus
+    ```
+4. Once inside the container, start the conda shell:
+    ```
+    source /opt/conda/bin/activate orthrus
+    ```
+
+Or you can set up the environment manually as following:
+
 ## Prerequisites
 We use the following settings to run the experiments reported in the paper:
 1. OS Version: 5.19.0-46-generic #47~22.04.1-Ubuntu

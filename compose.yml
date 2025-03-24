@@ -1,0 +1,7 @@
+services:
+  orthrus:
+    build: ./image
+    volumes:
+      - ./:/home
+      - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder
+    entrypoint: bash

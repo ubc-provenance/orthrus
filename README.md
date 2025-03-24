@@ -25,14 +25,31 @@ You can find the paper preprint [here](https://tfjmp.org/publications/2025-useni
 ```
 git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ```
+
+- create a new folder (referred to as the *data folder*) and download all `tar.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
+	
+	**NOTE:** Old files should be deleted before  downloading a new dataset.
+
+- in the data folder, download the java binary (ta3-java-consumer.tar.gz) to build the avro files for DARPA [E3](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) and [E5](https://drive.google.com/drive/folders/1YDxodpEmwu4VTlczsrLGkZMnh_o70lUh).
+
+- in the data folder, download the schema files (i.e. files with filename extension '.avdl' and '.avsc') for DARPA [E3](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1) and [E5](https://drive.google.com/drive/folders/1fCdYCIMBCm7gmBpmqDTuoMhbOoIY6Wzq).
+
 - install the environment and requirements ([guidelines](settings/environment-settings.md)).
-- create a new folder and download all `tar.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
-- in the same folder, [download the java binary](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) to build the avro files and the [schema folder](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1?usp=drive_link) (can be downloaded with `gdown --folder {ID}`)
-- follow the [guidelines](settings/uncompress_darpa_files.md) to convert bin files to json files
-- create postgres databases ([guidelines](settings/database.md), replace `database_name` with the name of the downloaded dataset)
+
+- follow the [guidelines](settings/uncompress_darpa_files.md) to convert bin files to json files.
+
+- create postgres databases ([guidelines](settings/database.md), replace `database_name` with the name of the downloaded dataset).
+
+**NOTE** If using the docker environment, the postgres database should be installed in your host instead of in the docker container.
+
 - optionally, if using a specific postgres host/user, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
-- optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs
-- go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset
+
+- optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs.
+
+- go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
+
+**NOTE." If using the docker environment (within the container), the path should be replaced as ```/data/``` 
+
 - fill the database for the corresponding dataset by running this command, using your installed conda env:
 
 ```shell
