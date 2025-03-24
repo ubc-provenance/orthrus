@@ -3,5 +3,5 @@ services:
     build: ./image
     volumes:
       - ./:/home
-      - /path_to_save_data:/data # used for passing dataset to container, should replace /path_to_save_data by a existed folder
+      - /path_to_save_data:/data # used for passing dataset to container, should replace /path_to_save_data by the dataset folder
     entrypoint: bash
