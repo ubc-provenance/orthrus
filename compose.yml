@@ -3,11 +3,10 @@ services:
     image: postgres:15
     container_name: postgres15
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_NAME=${DB_NAME}
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -25,10 +24,9 @@ services:
         condition: service_healthy
     environment:
       - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      - DB_PORT=5433
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
     volumes:
       - ./:/home
       - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder

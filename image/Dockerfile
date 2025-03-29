@@ -54,6 +54,6 @@ RUN pip uninstall -y scipy && pip install scipy==1.10.1 && \
 RUN pip install gdown
 
 # Create a user and set the working directory
-RUN useradd -m orthrus
-USER orthrus
+# RUN useradd -m orthrus
+# USER orthrus
 WORKDIR /home
