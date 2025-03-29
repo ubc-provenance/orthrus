@@ -1,14 +1,11 @@
-## Install/setup postgres
-
-- check if postgres is already install: `ls /etc/postgresql/`
-- if empty, install it with `sudo apt-get update && sudo apt-get install postgresql`
-- edit the file of the corresponding version: `sudo vi /etc/postgresql/{version}/main/pg_hba.conf`
-- locate the line `local   all   postgres   peer` and switch it to `local   all   postgres   md5`
-- restart the service with: `sudo service postgresql restart`
-- run psql with the postgres user: `sudo -u postgres psql -p 5433`
-- run the following steps, replacing `database_name` by the dataset name in lowercase (e.g. clearscope_e3)
-
 ## Creating database
+- within the postgres container, get a postgres shell by running:
+    ```
+    psql -U postgres
+    ```
+- Then, run the following steps, replacing `database_name` by the dataset name in lowercase (e.g. clearscope_e3)
+
+
 ```commandline
 create database database_name;
 
