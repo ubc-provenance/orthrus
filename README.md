@@ -26,7 +26,7 @@ You can find the paper preprint [here](https://tfjmp.org/publications/2025-useni
 git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ```
 
-- create a new folder (referred to as the *data folder*) and download all `tar.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
+- create a new folder (referred to as the *data folder*) and download all `.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
 	
 	**NOTE:** Old files should be deleted before  downloading a new dataset.
 
@@ -40,17 +40,13 @@ git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 
 - create postgres databases ([guidelines](settings/database.md), replace `database_name` with the name of the downloaded dataset).
 
-**NOTE** If using the docker environment, the postgres database should be installed in your host instead of in the docker container.
-
-- optionally, if using a specific postgres host/user, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
+- optionally, if using a specific postgres database instead of the postgres docker, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
 
 - optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs.
 
-- go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
+- optionaly, if using a manaully-set environment instead of the orthrus docker, go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
 
-**NOTE." If using the docker environment (within the container), the path should be replaced as ```/data/``` 
-
-- fill the database for the corresponding dataset by running this command, using your installed conda env:
+- go back to the orthrus container, fill the database for the corresponding dataset by running this command:
 
 ```shell
 python src/create_database.py [CLEARSCOPE_E3 | CADETS_E3 | THEIA_E3 | CLEARSCOPE_E5 | CADETS_E5 | THEIA_E5]
@@ -62,6 +58,8 @@ python src/create_database.py [CLEARSCOPE_E3 | CADETS_E3 | THEIA_E3 | CLEARSCOPE
 **Note:** Large storage capacity is needed to run experiments. A single run can generate more than 15GB of artifact files on E3 datasets, and much more with larger E5 datasets.
 
 ## Run experiments
+
+**Note:** If using the docker, all following steps should be conducted within the orthrus container.
 
 ### Reproduce results from the paper
 

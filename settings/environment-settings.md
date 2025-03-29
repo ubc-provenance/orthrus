@@ -8,13 +8,21 @@ For a quick environment setup using docker, under orthrus/:
     ```
     docker-compose build
     ```
-3. Then, you can launch a temporary shell with the environment:
+3. Then, start up containers:
     ```
-    docker-compose run --user $(id -u) --rm orthrus
+    docker-compose up -d
     ```
-4. Once inside the container, start the conda shell:
+4. Use following command to get a shell of the orthrus container, where python environment is installed and experiments are conducted:
     ```
-    source /opt/conda/bin/activate orthrus
+    docker-compose exec orthrus bash
+    ```
+5. Use following command to get a shell of the postgres container, where the database is installed:
+    ```
+    docker-compose exec postgres bash
+    ```
+6. After experiments are finished, containers can be stopped by following commands:
+    ```
+    docker-compose down -v
     ```
 
 Or you can set up the environment manually as following:

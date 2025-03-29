@@ -1,7 +1,38 @@
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres15
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   orthrus:
     build: ./image
+    container_name: orthrus
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5433
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
     volumes:
       - ./:/home
       - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder
     entrypoint: bash
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
