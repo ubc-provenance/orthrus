@@ -30,6 +30,7 @@ git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 **For E3** datasets only, you can download all required files directly by running:
 
 ```shell
+pip install gdown
 ./settings/scripts/download_{dataset}.sh {data_folder}
 ```
 where `{dataset}` can be either `clearscope_e3`, `cadets_e3` or `theia_e3` and `{data_folder}` is the absolute path to the output folder where all raw files will be downloaded.
