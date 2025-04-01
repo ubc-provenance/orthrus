@@ -27,6 +27,14 @@ git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ```
 
 ### Download files
+**For E3** datasets only, you can download all required files directly by running:
+
+```shell
+./settings/scripts/download_{dataset}.sh {data_folder}
+```
+where `{dataset}` can be either `clearscope_e3`, `cadets_e3` or `theia_e3` and `{data_folder}` is the absolute path to the output folder where all raw files will be downloaded.
+
+**For E5**, follow these steps:
 1. create a new folder (referred to as the *data folder*) and download all `.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL. In some cases, the downloading of a file may stop, in this case, simply ctrl+C and re-run the same gdown command with `--continue` until the file is fully downloaded. 
 **NOTE:** Old files should be deleted before  downloading a new dataset.
 
@@ -69,39 +77,30 @@ We aim to use two containers: one for the python env, where experiments will be 
     ```
 3. Start the container up:
     ```
-    sudo docker compose up -d
+    sudo docker compose up -d --build
     ```
-4. In a first terminal, start the `orthrus container`, where the python env is installed and where experiments will be conducted:
+4. In a terminal, get a shell into the `orthrus container`, where the python env is installed and where experiments will be conducted:
     ```
     sudo docker compose exec orthrus bash
     ```
-5. In a second terminal, fire the `postgres container`, where the database will be installed:
+5. (optional) You can get a shell to the `postgres container` for running specific commands on the postgres database.
     ```
     sudo docker compose exec postgres bash
     ```
 
-These two containers will be used in the following steps.
+In the remaining steps, only `orthrus container` will be used.
 
 ### Convert bin files to JSON
 
 At this stage, the data folder should contain the downloaded dataset files (.gz), the java client (tar.gz) and the schema files (.avdl, .avsc).
 
-Then go back to the `orthrus container` within the ```/home``` folder and run the following command to convert files:
+Go to the `orthrus container` within the ```/home``` folder and run the following command to convert files:
 
 ```shell
 ./settings/scripts/uncompress_darpa_files.sh /data/
 ```
 
-> This may take multiple hours based on the dataset.
-
-### Create the database
-Within `postgres container`'s shell, simply run:
-
-```shell
-./scripts/create_database.sh dataset_name
-```
-where `dataset_name` is one of: `[clearscope_e3 | cadets_e3 | theia_e3 | clearscope_e5 | cadets_e5 | theia_e5]`.
-Once the database is created, `postgres container` will provide access to the database and its shell won't be used anymore.
+> This may take multiple hours depending on the dataset.
 
 ### Optional configurations
 - optionally, if using a specific postgres database instead of the postgres docker, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
