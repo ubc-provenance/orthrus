@@ -31,6 +31,7 @@ services:
     volumes:
       - ./:/home
       - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder
+      # - ./artifacts:/home/artifacts # modify ./artifacts to the path where output files should be stored
     entrypoint: bash
     stdin_open: true
     tty: true
