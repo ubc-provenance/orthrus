@@ -37,13 +37,33 @@ git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ### Docker Container
 #### Docker Install
 
-First install Docker following the [steps from the official site](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
+1. First install Docker following the [steps from the official site](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
+
+2. Then, install dependencies for CUDA support with Docker:
+
+```shell
+# Add the NVIDIA package repository
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+# Update and install
+sudo apt-get update
+sudo apt-get install -y nvidia-container-toolkit
+
+# Restart services
+sudo systemctl restart docker
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
 
 #### Building Image
-For a quick environment setup using docker, under orthrus/:
+We aim to use two containers: one for the python env, where experiments will be conducted, and one running the postgres database.
+
 1. In ```orthrus/compose.yml```, set ```/path/of/data/folder``` as the data folder
 
-2. Build the local image:
+2. Build the local image (under `orthrus/`):
     ```
     sudo docker compose build
     ```
@@ -80,14 +100,13 @@ Within `postgres container`'s shell, simply run:
 ```shell
 ./scripts/create_database.sh dataset_name
 ```
-where `dataset_name` is one of: `[clearscope_e3 | cadets_e3 | theia_e3 | clearscope_e5 | cadets_e5 | theia_e5]`
+where `dataset_name` is one of: `[clearscope_e3 | cadets_e3 | theia_e3 | clearscope_e5 | cadets_e5 | theia_e5]`.
+Once the database is created, `postgres container` will provide access to the database and its shell won't be used anymore.
 
 ### Optional configurations
 - optionally, if using a specific postgres database instead of the postgres docker, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
 
-- optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs.
-
-- optionaly, if using a manually-set environment instead of the orthrus docker, go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
+- optionaly, if you want to change the output folder where generated files are stored, update accordingly the volume by uncommenting `./artifacts:/home/artifacts` in `compose.yml`.
 
 ### Fill the database
 
