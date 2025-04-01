@@ -6,12 +6,13 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
     ports:
-      - "5433:5432"
+      - "8888:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./settings/scripts:/scripts
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,12 +25,12 @@ services:
         condition: service_healthy
     environment:
       - DB_HOST=postgres
-      - DB_PORT=5433
+      - DB_PORT=8888
       - DB_USER=postgres
       - DB_PASSWORD=postgres
     volumes:
       - ./:/home
-      - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder
+      - /data1/tbilot/reproduce:/data # should replace /path/of/data/folder as path to the data folder
     entrypoint: bash
     stdin_open: true
     tty: true

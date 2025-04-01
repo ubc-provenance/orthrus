@@ -21,45 +21,87 @@ You can find the paper preprint [here](https://tfjmp.org/publications/2025-useni
 
 ## Setup
 
-- clone the repo with submodules:
+### Clone the repo with submodules
 ```
 git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ```
 
-- create a new folder (referred to as the *data folder*) and download all `.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL.
-	
-	**NOTE:** Old files should be deleted before  downloading a new dataset.
+### Download files
+1. create a new folder (referred to as the *data folder*) and download all `.gz` files from a specific DARPA dataset (follow the link provided for DARPA E3 [here](https://drive.google.com/drive/folders/1fOCY3ERsEmXmvDekG-LUUSjfWs6TRdp-) and DARPA E5 [here](https://drive.google.com/drive/folders/1GVlHQwjJte3yz0n1a1y4H4TfSe8cu6WJ)). If using CLI, [use gdown](https://stackoverflow.com/a/50670037/10183259), by taking the ID of the document directly from the URL. In some cases, the downloading of a file may stop, in this case, simply ctrl+C and re-run the same gdown command with `--continue` until the file is fully downloaded. 
+**NOTE:** Old files should be deleted before  downloading a new dataset.
 
-- in the data folder, download the java binary (ta3-java-consumer.tar.gz) to build the avro files for DARPA [E3](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) and [E5](https://drive.google.com/drive/folders/1YDxodpEmwu4VTlczsrLGkZMnh_o70lUh).
+2. in the data folder, download the java binary (ta3-java-consumer.tar.gz) to build the avro files for DARPA [E3](https://drive.google.com/drive/folders/1kCRC5CPI8MvTKQFvPO4hWIRHeuUXLrr1) and [E5](https://drive.google.com/drive/folders/1YDxodpEmwu4VTlczsrLGkZMnh_o70lUh).
 
-- in the data folder, download the schema files (i.e. files with filename extension '.avdl' and '.avsc') for DARPA [E3](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1) and [E5](https://drive.google.com/drive/folders/1fCdYCIMBCm7gmBpmqDTuoMhbOoIY6Wzq).
+3. in the data folder, download the schema files (i.e. files with filename extension '.avdl' and '.avsc') for DARPA [E3](https://drive.google.com/drive/folders/1gwm2gAlKHQnFvETgPA8kJXLLm3L-Z3H1) and [E5](https://drive.google.com/drive/folders/1fCdYCIMBCm7gmBpmqDTuoMhbOoIY6Wzq).
 
-- install the environment and requirements ([guidelines](settings/environment-settings.md)).
+### Docker Container
+#### Docker Install
 
-- follow the [guidelines](settings/uncompress_darpa_files.md) to convert bin files to json files.
+First install Docker following the [steps from the official site](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
 
-- create postgres databases ([guidelines](settings/database.md), replace `database_name` with the name of the downloaded dataset).
+#### Building Image
+For a quick environment setup using docker, under orthrus/:
+1. In ```orthrus/compose.yml```, set ```/path/of/data/folder``` as the data folder
 
+2. Build the local image:
+    ```
+    sudo docker compose build
+    ```
+3. Start the container up:
+    ```
+    sudo docker compose up -d
+    ```
+4. In a first terminal, start the `orthrus container`, where the python env is installed and where experiments will be conducted:
+    ```
+    sudo docker compose exec orthrus bash
+    ```
+5. In a second terminal, fire the `postgres container`, where the database will be installed:
+    ```
+    sudo docker compose exec postgres bash
+    ```
+
+These two containers will be used in the following steps.
+
+### Convert bin files to JSON
+
+At this stage, the data folder should contain the downloaded dataset files (.gz), the java client (tar.gz) and the schema files (.avdl, .avsc).
+
+Then go back to the `orthrus container` within the ```/home``` folder and run the following command to convert files:
+
+```shell
+./settings/scripts/uncompress_darpa_files.sh /data/
+```
+
+> This may take multiple hours based on the dataset.
+
+### Create the database
+Within `postgres container`'s shell, simply run:
+
+```shell
+./scripts/create_database.sh dataset_name
+```
+where `dataset_name` is one of: `[clearscope_e3 | cadets_e3 | theia_e3 | clearscope_e5 | cadets_e5 | theia_e5]`
+
+### Optional configurations
 - optionally, if using a specific postgres database instead of the postgres docker, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
 
 - optionaly, the `ROOT_ARTIFACT_DIR` within `src/config.py` can be changed. All preprocessed files and model weights will be stored there when the code runs.
 
-- optionaly, if using a manaully-set environment instead of the orthrus docker, go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
+- optionaly, if using a manually-set environment instead of the orthrus docker, go to `src/config.py` and search for `DATASET_DEFAULT_CONFIG` and set the path to the uncompressed JSON files folder in the `raw_dir` variable of your downloaded dataset.
 
-- go back to the orthrus container, fill the database for the corresponding dataset by running this command:
+### Fill the database
+
+Within `orthrus container`'s shell, fill the database for the corresponding dataset by running this command:
 
 ```shell
 python src/create_database.py [CLEARSCOPE_E3 | CADETS_E3 | THEIA_E3 | CLEARSCOPE_E5 | CADETS_E5 | THEIA_E5]
 ```
 
-
-**Note:** Large storage capacity is needed to download, parse and save datasets and databases.
-
-**Note:** Large storage capacity is needed to run experiments. A single run can generate more than 15GB of artifact files on E3 datasets, and much more with larger E5 datasets.
+**Note:** Large storage capacity is needed to download, parse and save datasets and databases, as well as to run experiments. A single run can generate more than 15GB of artifact files on E3 datasets, and much more with larger E5 datasets.
 
 ## Run experiments
 
-**Note:** If using the docker, all following steps should be conducted within the orthrus container.
+The following commands should be executed within the `orthrus container`.
 
 ### Reproduce results from the paper
 
