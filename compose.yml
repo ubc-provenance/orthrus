@@ -30,7 +30,7 @@ services:
       - DB_PASSWORD=postgres
     volumes:
       - ./:/home
-      - /data1/tbilot/reproduce:/data # should replace /path/of/data/folder as path to the data folder
+      - /path/of/data/folder:/data # should replace /path/of/data/folder as path to the data folder
     entrypoint: bash
     stdin_open: true
     tty: true
