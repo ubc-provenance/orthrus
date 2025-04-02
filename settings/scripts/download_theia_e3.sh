@@ -2,6 +2,7 @@ RAW_DIR=$1
 mkdir $1
 cd $RAW_DIR
 
+# https://drive.google.com/drive/folders/1AWXy7GFGJWeJPGzvkT935kTfwBYzjhfC
 gdown --no-cookies 1yksk4I9DBnl0Tca_Y0eaiNcpRNccB9sF
 gdown --no-cookies 10cecNtR3VsHfV0N-gNEeoVeB89kCnse5
 gdown --no-cookies 10KZG-8ET9CRG9qc8OmEQMaCgf6uSEylD
