@@ -15,4 +15,4 @@ for arg in "$@"; do
 done
 
 # Execute the Python script with the passed arguments
-nohup python src/orthrus.py $args --wandb &
+nohup PYTHONHASHSEED=0 python src/orthrus.py $args --wandb &
