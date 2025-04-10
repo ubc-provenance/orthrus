@@ -138,8 +138,8 @@ Running `orthrus.py` will run by default the `graph_construction`, `edge_featuri
 | CADETS_E3_ano   | 9   | 0   | 268,085   | 59  | 1.00   | 0.36   |
 | THEIA_E3_full  | 36  | 10  | 699,167   | 82  | 0.78   | 0.48   |
 | THEIA_E3_ano    | 6   | 0   | 699,177   | 112 | 1.00   | 0.22   |
-| CADETS_E5_full  | 1   | 11  | 3111,244  | 122 | 0.08   | 0.02   |
-| CADETS_E5_ano   | 1   | 4   | 3111,251  | 122 | 0.20   | 0.04   |
+| CADETS_E5_full  | 2   | 10  | 3111,245  | 121 | 0.17   | 0.05   |
+| CADETS_E5_ano   | 1   | 5   | 3111,250  | 122 | 0.17   | 0.04   |
 | THEIA_E5_full  | 13  | 2   | 747,381   | 56  | 0.86   | 0.40   |
 | THEIA_E5_ano    | 2   | 0   | 747,383   | 67  | 1.00   | 0.17   |
 | CLEARSCOPE_E5_full  | 3   | 5   | 150,669   | 48  | 0.37   | 0.14   |
@@ -164,7 +164,7 @@ PYTHONHASHSEED=0 python src/orthrus.py CLEARSCOPE_E3 --graph_construction.build_
 
 **CADETS_E5**
 ```
-PYTHONHASHSEED=0 python src/orthrus.py CADETS_E5 --detection.gnn_training.lr=0.0001
+PYTHONHASHSEED=0 python src/orthrus.py CADETS_E5 --detection.gnn_training.node_out_dim=128 --detection.gnn_training.lr=0.0001
 ```
 
 **THEIA_E5**
