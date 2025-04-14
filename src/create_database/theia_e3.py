@@ -116,7 +116,7 @@ def store_file(file_path, cur, connect, index_id, filelist):
         with open(os.path.join(file_path, file), "r") as f:
             for line in f:
                 if "avro.cdm18.FileObject" in line:
-                    Object_uuid = re.findall('avro.cdm18.FileObject":{"uuid":"(.*?)",(.*?)"path":"(.*?)"', line)
+                    Object_uuid = re.findall('avro.cdm18.FileObject":{"uuid":"(.*?)",(.*?)"filename":"(.*?)"', line)
                     try:
                         file_obj2hash[Object_uuid[0][0]] = Object_uuid[0][-1]
                     except:
