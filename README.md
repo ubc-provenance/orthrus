@@ -142,8 +142,11 @@ Running `orthrus.py` will run by default the `graph_construction`, `edge_featuri
 | CADETS_E5_ano   | 1   | 5   | 3111,250  | 122 | 0.17   | 0.04   |
 | THEIA_E5_full  | 13  | 2   | 747,381   | 56  | 0.86   | 0.40   |
 | THEIA_E5_ano    | 2   | 0   | 747,383   | 67  | 1.00   | 0.17   |
+| CLEARSCOPE_E3_full  | 1   | 587   | 110,775   | 40 | 0.00  | 0.01 |
+| CLEARSCOPE_Es_ano | 1 | 5 | 111,375 | 40  | 0.17  | 0.06  |
 | CLEARSCOPE_E5_full  | 3   | 5   | 150,669   | 48  | 0.37   | 0.14   |
 | CLEARSCOPE_E5_ano | 1   | 4   | 150,670 | 50  | 0.20   | 0.06   |
+
 
 #### Experiments
 
