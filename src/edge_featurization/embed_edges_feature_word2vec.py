@@ -67,13 +67,13 @@ def gen_vectorized_graphs(indexid2vec, etype2oh, ntype2oh, split_files, out_dir,
     base_dir = cfg.graph_construction.build_graphs._graphs_dir
     sorted_paths = get_all_files_from_folders(base_dir, split_files)
 
-    for path in tqdm(sorted_paths):
-        log(f"Computing edge embeddings: {path}")
+    for path in tqdm(sorted_paths, "Embedding edges"):
+        # log(f"Computing edge embeddings: {path}")
         file = path.split("/")[-1]
 
         graph = torch.load(path)
 
-        sorted_edges = sorted(graph.edges(data=True, keys=True), key=lambda t: t[3]["time"])
+        sorted_edges = graph.edges(data=True, keys=True)
 
         dataset = TemporalData()
         src = []
@@ -105,10 +105,9 @@ def gen_vectorized_graphs(indexid2vec, etype2oh, ntype2oh, split_files, out_dir,
         os.makedirs(out_dir, exist_ok=True)
         torch.save(dataset, os.path.join(out_dir, f"{file}.TemporalData.simple"))
 
-        log(f'Graph: {file}. Events num: {len(sorted_edges)}. Node num: {len(graph.nodes)}')
+        # log(f'Graph: {file}. Events num: {len(sorted_edges)}. Node num: {len(graph.nodes)}')
 
 def main(cfg):
-    # TODO: support both word2vec and doc2vec
     logger = get_logger(
         name="embed_edges_by_feature_word2vec",
         filename=os.path.join(cfg.edge_featurization.embed_edges._logs_dir, "embed_edges.log")
@@ -122,6 +121,7 @@ def main(cfg):
     log("Loading node msg from database...")
     cur, connect = init_database_connection(cfg)
     indexid2msg = get_indexid2msg(cur, use_cmd=use_cmd, use_port=use_port)
+    indexid2msg = dict(sorted(indexid2msg.items(), key=lambda item: int(item[0])))
 
     log("Generating node vectors...")
     feature_word2vec_model_path = cfg.edge_featurization.embed_nodes.feature_word2vec._model_dir + 'feature_word2vec.model'
