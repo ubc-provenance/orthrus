@@ -2,7 +2,7 @@
 
 # ORTHRUS: Achieving High Quality of Attribution in Provenance-based Intrusion Detection Systems
 
-This repo contains the official code of Orthrus.
+This repo contains the official code of the [Orthrus paper](https://www.usenix.org/system/files/conference/usenixsecurity25/sec25cycle1-prepub-103-jiang-baoxiang.pdf).
 
 ## Citing our work
 
@@ -17,7 +17,9 @@ This repo contains the official code of Orthrus.
 }
 ```
 
-You can find the paper preprint [here](https://tfjmp.org/publications/2025-usenixsec.pdf).
+## Updates
+
+[2025.06.04] setup guidelines are now simplified. The DARPA TC databases can be directly downloaded and installed locally. No need to fill them locally anymore.
 
 ## Setup
 
@@ -26,93 +28,9 @@ You can find the paper preprint [here](https://tfjmp.org/publications/2025-useni
 git clone --recurse-submodules https://github.com/ubc-provenance/orthrus.git
 ```
 
-### Download files
-You can download all required files directly by running:
+### 10-min install of Docker and Datasets
 
-```shell
-pip install gdown
-```
-```shell
-./settings/scripts/download_{dataset}.sh {data_folder}
-```
-where `{dataset}` can be either `clearscope_e3`, `cadets_e3`, `theia_e3`, `clearscope_e5`, `cadets_e5` or `theia_e5` and `{data_folder}` is the absolute path to the output folder where all raw files will be downloaded.
-
-Alternatively, you can [download the files manually](settings/download-files.md) by selecting download URLs from Google Drive.
-
-### Docker Container
-#### Docker Install
-
-1. First install Docker following the [steps from the official site](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
-
-2. Then, install dependencies for CUDA support with Docker:
-
-```shell
-# Add the NVIDIA package repository
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-# Update and install
-sudo apt-get update
-sudo apt-get install -y nvidia-container-toolkit
-
-# Restart services
-sudo systemctl restart docker
-sudo nvidia-ctk runtime configure --runtime=docker
-sudo systemctl restart docker
-```
-
-#### Building Image
-We aim to use two containers: one for the python env, where experiments will be conducted, and one running the postgres database.
-
-1. In ```orthrus/compose.yml```, set ```/path/of/data/folder``` as the data folder
-
-2. Build the local image (under `orthrus/`):
-    ```
-    sudo docker compose build
-    ```
-3. Start the container up:
-    ```
-    sudo docker compose up -d --build
-    ```
-4. In a terminal, get a shell into the `orthrus container`, where the python env is installed and where experiments will be conducted:
-    ```
-    sudo docker compose exec orthrus bash
-    ```
-5. (optional) You can get a shell to the `postgres container` for running specific commands on the postgres database.
-    ```
-    sudo docker compose exec postgres bash
-    ```
-
-In the remaining steps, only `orthrus container` will be used.
-
-### Convert bin files to JSON
-
-At this stage, the data folder should contain the downloaded dataset files (.gz), the java client (tar.gz) and the schema files (.avdl, .avsc).
-
-Go to the `orthrus container` within the ```/home``` folder and run the following command to convert files:
-
-```shell
-./settings/scripts/uncompress_darpa_files.sh /data/
-```
-
-> This may take multiple hours depending on the dataset.
-
-### Optional configurations
-- optionally, if using a specific postgres database instead of the postgres docker, update the connection config by setting `DATABASE_DEFAULT_CONFIG` within `src/config.py`.
-
-- optionaly, if you want to change the output folder where generated files are stored, update accordingly the volume by uncommenting `./artifacts:/home/artifacts` in `compose.yml`.
-
-### Fill the database
-
-Within `orthrus container`'s shell, fill the database for the corresponding dataset by running this command:
-
-```shell
-python src/create_database.py [CLEARSCOPE_E3 | CADETS_E3 | THEIA_E3 | CLEARSCOPE_E5 | CADETS_E5 | THEIA_E5]
-```
-
-**Note:** Large storage capacity is needed to download, parse and save datasets and databases, as well as to run experiments. A single run can generate more than 15GB of artifact files on E3 datasets, and much more with larger E5 datasets.
+We have made the installation of DARPA TC/OpTC easy and fast, simply follow [these guidelines](https://github.com/ubc-provenance/PIDSMaker/blob/velox/settings/ten-minute-install.md).
 
 ## Run experiments
 
@@ -134,35 +52,35 @@ Running `orthrus.py` will run by default the `graph_construction`, `edge_featuri
 #### Expected results
 | Name             | TP  | FP  | TN       | FN  | Precision | MCC       |
 |------------------|-----|-----|----------|-----|-----------|-----------|
-| CADETS_E3_full  | 21  | 13  | 268,072   | 47  | 0.61   | 0.43   |
-| CADETS_E3_ano   | 9   | 0   | 268,085   | 59  | 1.00   | 0.36   |
-| THEIA_E3_full  | 36  | 10  | 699,167   | 82  | 0.78   | 0.48   |
-| THEIA_E3_ano    | 6   | 0   | 699,177   | 112 | 1.00   | 0.22   |
+| CADETS_E3_full  | 29  | 22  | 268,063   | 39  | 0.57   | 0.49   |
+| CADETS_E3_ano   | 17   | 1   | 268,084   | 51  | 0.94   | 0.49   |
+| THEIA_E3_full  | 22  | 0  | 699,177   | 96  | 1.00   | 0.43   |
+| THEIA_E3_ano    | 2   | 0   | 699,177   | 116 | 1.00   | 0.13   |
 | CADETS_E5_full  | 2   | 10  | 3111,245  | 121 | 0.17   | 0.05   |
 | CADETS_E5_ano   | 1   | 5   | 3111,250  | 122 | 0.17   | 0.04   |
 | THEIA_E5_full  | 13  | 2   | 747,381   | 56  | 0.86   | 0.40   |
 | THEIA_E5_ano    | 2   | 0   | 747,383   | 67  | 1.00   | 0.17   |
-| CLEARSCOPE_E3_full  | 1   | 587   | 110,775   | 40 | 0.00  | 0.01 |
-| CLEARSCOPE_E3_ano | 1 | 5 | 111,375 | 40  | 0.17  | 0.06  |
-| CLEARSCOPE_E5_full  | 3   | 5   | 150,669   | 48  | 0.37   | 0.14   |
-| CLEARSCOPE_E5_ano | 1   | 4   | 150,670 | 50  | 0.20   | 0.06   |
+| CLEARSCOPE_E3_full  | 1   | 504   | 110,858   | 40 | 0.00  | 0.00 |
+| CLEARSCOPE_E3_ano | 1 | 6 | 111,356 | 40  | 0.14  | 0.06  |
+| CLEARSCOPE_E5_full  | 4  | 201   | 150,473 | 47  | 0.20   | 0.04   |
+| CLEARSCOPE_E5_ano | 2   | 7   | 150,667 | 49  | 0.22   | 0.09   |
 
 
 #### Experiments
 
 **CADETS_E3**
 ```
-PYTHONHASHSEED=0 python src/orthrus.py CADETS_E3 --detection.gnn_training.encoder.graph_attention.dropout=0.25 --detection.gnn_training.node_hid_dim=256 --detection.gnn_training.node_out_dim=256 --detection.gnn_training.lr=0.001 --detection.gnn_training.num_epochs=20
+PYTHONHASHSEED=0 python src/orthrus.py CADETS_E3 --detection.gnn_training.encoder.graph_attention.dropout=0.25 --detection.gnn_training.node_hid_dim=256 --detection.gnn_training.node_out_dim=256 --detection.gnn_training.lr=0.001 --detection.gnn_training.num_epochs=20 --seed=4
 ```
 
 **THEIA_E3**
 ```
-PYTHONHASHSEED=0 python src/orthrus.py THEIA_E3
+PYTHONHASHSEED=0 python src/orthrus.py THEIA_E3 --detection.gnn_training.encoder.graph_attention.dropout=0.1
 ```
 
 **CLEARSCOPE_E3**
 ```
-PYTHONHASHSEED=0 python src/orthrus.py CLEARSCOPE_E3 --graph_construction.build_graphs.time_window_size=1.0 --detection.gnn_training.encoder.graph_attention.dropout=0.1
+PYTHONHASHSEED=0 python src/orthrus.py CLEARSCOPE_E3 --graph_construction.build_graphs.time_window_size=1.0 --detection.gnn_training.encoder.graph_attention.dropout=0.1 --seed=2
 ```
 
 **CADETS_E5**
