@@ -40,7 +40,7 @@ def train_feature_word2vec(corpus, cfg, model_save_path, logger):
     compute_loss = cfg.edge_featurization.embed_nodes.feature_word2vec.compute_loss
     negative = cfg.edge_featurization.embed_nodes.feature_word2vec.negative
     use_seed = cfg.edge_featurization.embed_nodes.use_seed
-    SEED = 0
+    SEED = cfg._seed
 
     if show_epoch_loss:
         if use_seed:
@@ -116,7 +116,7 @@ def main(cfg):
     use_seed = cfg.edge_featurization.embed_nodes.use_seed
 
     if use_seed:
-        SEED = 0
+        SEED = cfg._seed
         np.random.seed(SEED)
         random.seed(SEED)
 

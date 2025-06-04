@@ -84,8 +84,8 @@ def test(
     df = pd.DataFrame(edge_list)
     df.to_csv(csv_file, sep=',', header=True, index=False, encoding='utf-8')
 
-    log(
-        f'Time: {time_interval}, Loss: {tot_loss:.4f}, Nodes_count: {len(unique_nodes)}, Edges_count: {event_count}, Cost Time: {(end - start):.2f}s')
+    # log(
+    #     f'Time: {time_interval}, Loss: {tot_loss:.4f}, Nodes_count: {len(unique_nodes)}, Edges_count: {event_count}, Cost Time: {(end - start):.2f}s')
 
 
 def main(cfg):
@@ -98,7 +98,7 @@ def main(cfg):
 
     # For each model trained at a given epoch, we test
     gnn_models_dir = cfg.detection.gnn_training._trained_models_dir
-    all_trained_models = listdir_sorted(gnn_models_dir)
+    all_trained_models = ["model_epoch_1"] if cfg._from_weights else listdir_sorted(gnn_models_dir)
 
     device = get_device(cfg)
 
@@ -106,7 +106,10 @@ def main(cfg):
         log(f"Evaluation with model {trained_model}...")
         torch.cuda.empty_cache()
         model = build_model(data_sample=test_data[0], device=device, cfg=cfg, max_node_num=max_node_num)
-        model = load_model(model, os.path.join(gnn_models_dir, trained_model), cfg, map_location=device)
+        model = load_model(model, os.path.join(gnn_models_dir, trained_model))
+        
+        if cfg._from_weights:
+            model.load_state_dict(torch.load(os.path.join(cfg._from_weights_path, f"{cfg.dataset.name}.pkl")))
 
         # TODO: we may want to move the validation set into the training for early stopping
         for graphs, split in [

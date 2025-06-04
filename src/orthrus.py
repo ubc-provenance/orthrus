@@ -32,7 +32,7 @@ import time
 
 def main(cfg, args, **kwargs):
     if cfg.detection.gnn_training.use_seed:
-        seed = 0
+        seed = cfg._seed
         random.seed(seed)
         np.random.seed(seed)
 

@@ -46,10 +46,10 @@ def main(cfg):
     model = build_model(data_sample=train_data[0], device=device, cfg=cfg, max_node_num=max_node_num)
     optimizer = optimizer_factory(cfg, parameters=set(model.parameters()))
 
-    num_epochs = cfg.detection.gnn_training.num_epochs
+    num_epochs = 1 if cfg._from_weights else cfg.detection.gnn_training.num_epochs
     tot_loss = 0.0
     epoch_times = []
-    for epoch in tqdm(range(1, num_epochs + 1)):
+    for epoch in tqdm(range(1, num_epochs + 1), desc="Training"):
         start = timer()
 
         # Before each epoch, we reset the memory
@@ -88,7 +88,7 @@ def main(cfg):
         # Check points
         if cfg._test_mode or epoch % 1 == 0:
             model_path = os.path.join(gnn_models_dir, f"model_epoch_{epoch}")
-            save_model(model, model_path, cfg)
+            save_model(model, model_path)
             
     wandb.log({
         "train_epoch_time": round(np.mean(epoch_times), 2),

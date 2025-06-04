@@ -277,6 +277,9 @@ def get_default_cfg(args):
      cfg._test_mode = False
 
      cfg._use_cpu = args.cpu
+     cfg._from_weights = args.from_weights
+     cfg._from_weights_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "weights/")
+     cfg._seed = args.seed
 
      # Database: we simply create variables for all configurations described in the dict
      cfg.database = CN()
@@ -312,6 +315,8 @@ def get_runtime_required_args(return_unknown_args=False, args=None):
      parser.add_argument('--tags', type=str, default="", help="Name of the tag to use. Tags are used to group runs together")
      parser.add_argument('--cpu', action="store_true", help="Whether to run on CPU rather than GPU")
      parser.add_argument('--run_from_training', action="store_true", help="Runs Orthrus from training when graphs are arleady preprocessed")
+     parser.add_argument('--from_weights', action="store_true", help="Whether to load Orthrus from pkl weights")
+     parser.add_argument('--seed', type=int, default=0, help="Manual seed")
 
      parser.add_argument('--show_attack', type=int, help="Number of attack for plotting", default=0)
      parser.add_argument('--gt_type', type=str, help="Type of ground truth", default="orthrus")

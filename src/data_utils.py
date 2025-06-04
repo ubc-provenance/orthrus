@@ -240,7 +240,7 @@ class GraphReindexer:
         
         return x, edge_index
 
-def save_model(model, path: str, cfg):
+def save_model(model, path: str, neigh_loader: bool=True):
     """
     Saves only the required weights and tensors on disk.
     Using torch.save() directly on the model is very long (up to 10min),
@@ -251,17 +251,17 @@ def save_model(model, path: str, cfg):
     # We only save specific tensors, as the other tensors are not useful to save (assoc, cache, etc)
     torch.save(model.state_dict(), os.path.join(path, "state_dict.pkl"), pickle_protocol=pickle.HIGHEST_PROTOCOL)
     
-    if isinstance(model.encoder, OrthrusEncoder):
+    if neigh_loader and isinstance(model.encoder, OrthrusEncoder):
         torch.save(model.encoder.neighbor_loader, os.path.join(path, "neighbor_loader.pkl"), pickle_protocol=pickle.HIGHEST_PROTOCOL)
 
-def load_model(model, path: str, cfg, map_location=None):
+def load_model(model, path: str, neigh_loader: bool=True):
     """
     Loads weights and tensors from disk into a model.
     """
     model.load_state_dict(
         torch.load(os.path.join(path, "state_dict.pkl")))
     
-    if isinstance(model.encoder, OrthrusEncoder):
+    if neigh_loader and isinstance(model.encoder, OrthrusEncoder):
         model.encoder.neighbor_loader = torch.load(os.path.join(path, "neighbor_loader.pkl"))
 
     return model
