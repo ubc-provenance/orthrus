@@ -47,7 +47,7 @@ python src/orthrus.py [dataset] [config args...]
 Running `orthrus.py` will run by default the `graph_construction`, `edge_featurization`, `detection` and `attack_reconstruction` tasks configured within the `config/orthrus.yml` file. This configuration can be updated directly in the YML file or from the CLI, as shown above.
 
 > [!NOTE]
-> Due to missing PYTHONHASHSEED when seeding Gensim’s Word2Vec, we were unable to exactly reproduce the original results, though the following experiments produce closely aligned outcomes.
+> The original results could not be exactly replicated due to a missing PYTHONHASHSEED affecting Gensim's Word2Vec, though the following experiments yield similar results in most cases.
 
 #### Expected results
 | Name             | TP  | FP  | TN       | FN  | Precision | MCC       |
@@ -56,8 +56,8 @@ Running `orthrus.py` will run by default the `graph_construction`, `edge_featuri
 | CADETS_E3_ano   | 17   | 1   | 268,084   | 51  | 0.94   | 0.49   |
 | THEIA_E3_full  | 22  | 0  | 699,177   | 96  | 1.00   | 0.43   |
 | THEIA_E3_ano    | 2   | 0   | 699,177   | 116 | 1.00   | 0.13   |
-| CADETS_E5_full  | 2   | 10  | 3111,245  | 121 | 0.17   | 0.05   |
-| CADETS_E5_ano   | 1   | 5   | 3111,250  | 122 | 0.17   | 0.04   |
+| CADETS_E5_full  | 3   | 1318  | 3,132,823  | 120 | 0.00   | 0.01   |
+| CADETS_E5_ano   | 1   | 2   | 3,134,139  | 122 | 0.33   | 0.05   |
 | THEIA_E5_full  | 13  | 2   | 747,381   | 56  | 0.86   | 0.40   |
 | THEIA_E5_ano    | 2   | 0   | 747,383   | 67  | 1.00   | 0.17   |
 | CLEARSCOPE_E3_full  | 1   | 504   | 110,858   | 40 | 0.00  | 0.00 |
@@ -85,7 +85,7 @@ PYTHONHASHSEED=0 python src/orthrus.py CLEARSCOPE_E3 --graph_construction.build_
 
 **CADETS_E5**
 ```
-PYTHONHASHSEED=0 python src/orthrus.py CADETS_E5 --detection.gnn_training.node_out_dim=128 --detection.gnn_training.lr=0.0001
+PYTHONHASHSEED=0 python src/orthrus.py CADETS_E5 --detection.gnn_training.node_out_dim=128 --detection.gnn_training.lr=0.0001 --detection.gnn_training.encoder.graph_attention.dropout=0.1 --graph_construction.build_graphs.time_window_size=1.0
 ```
 
 **THEIA_E5**
