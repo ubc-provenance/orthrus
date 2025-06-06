@@ -19,7 +19,11 @@ This repo contains the official code of the [Orthrus paper](https://www.usenix.o
 
 ## Updates
 
-[2025.06.04] setup guidelines are now simplified. The DARPA TC databases can be directly downloaded and installed locally. No need to fill them locally anymore.
+[2025.06.06] Orthrus is now available in [PIDSMaker](https://github.com/ubc-provenance/PIDSMaker)!
+
+[2025.06.05] Orthrus' weights are available.
+
+[2025.06.04] Installation guidelines are now simplified. The DARPA TC databases can be directly downloaded and installed locally. No need to fill them locally anymore.
 
 ## Setup
 
@@ -34,7 +38,7 @@ We have made the installation of DARPA TC/OpTC easy and fast, simply follow [the
 
 ## Run experiments
 
-The following commands should be executed within the `orthrus container`.
+The following commands should be executed within the `pids` container.
 
 ### Reproduce results from the paper
 
@@ -67,6 +71,8 @@ Running `orthrus.py` will run by default the `graph_construction`, `edge_featuri
 
 
 #### Experiments
+
+These experiments use pre-trained weights of Orthrus.
 
 **CADETS_E3**
 ```
